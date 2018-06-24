@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 二 6月  5 03:59:43 2018 (+0800)
-// Last-Updated: Sun Jun 24 10:00:44 2018 (-0400)
+// Last-Updated: Sun Jun 24 11:23:07 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 27
+//     Update #: 28
 // URL: http://wuhongyi.cn 
 
 #ifndef _USERCLASS_H_
@@ -159,7 +159,8 @@ public:
   double datadownf1[256];
   double dataups1[256];
   double datadowns1[256];
- 
+
+  int selectch;
 
   fftw_complex *in;
   double *out;

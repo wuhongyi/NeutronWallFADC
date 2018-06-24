@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 二 6月  5 04:03:08 2018 (+0800)
-// Last-Updated: Sun Jun 24 10:00:44 2018 (-0400)
+// Last-Updated: Sun Jun 24 13:21:02 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 64
+//     Update #: 69
 // URL: http://wuhongyi.cn 
 
 #define  UserClass_cxx
@@ -52,6 +52,8 @@ void UserClass::Begin(TTree * /*tree*/)
    FL = 4;
    FG = 0;
 
+   selectch = 4;
+   
    cutgup = new TCutG("CUTGUP",4);
    cutgup->SetPoint(0,1318.05,1829.88);// 0 2
    cutgup->SetPoint(1,1461.32,1484.87);
@@ -81,15 +83,16 @@ void UserClass::Begin(TTree * /*tree*/)
      }
    
    roottree = new TTree("tree","Hongyi Wu Data");
+   roottree->Branch("tnum",&tnum,"tnum/i");
    roottree->Branch("rp",&rp,"rp/S");
    roottree->Branch("peak",&peak,"peak/S");
    roottree->Branch("peakm",&peakm,"peakm/S");
    roottree->Branch("ffpeak",&ffpeak,"ffpeak/D");
-   roottree->Branch("data",&data,"data[256]/S");
-   roottree->Branch("dt",&dt,"dt[256]/S");
-   roottree->Branch("fastfilter",&fastfilter,"fastfilter[256]/D");
-   roottree->Branch("ADC",&ADC,"ADC[240]/S");
-   roottree->Branch("sample",&sample,"sample[240]/S");
+   // roottree->Branch("data",&data,"data[256]/S");
+   // roottree->Branch("dt",&dt,"dt[256]/S");
+   // roottree->Branch("fastfilter",&fastfilter,"fastfilter[256]/D");
+   // roottree->Branch("ADC",&ADC,"ADC[240]/S");
+   // roottree->Branch("sample",&sample,"sample[240]/S");
    roottree->Branch("ofr",&ofr,"ofr/O");
    roottree->Branch("num",&num,"num/I");
    roottree->Branch("energy",&energy,"energy/I");
@@ -100,8 +103,8 @@ void UserClass::Begin(TTree * /*tree*/)
    roottree->Branch("fft0",&fft0,"fft0/D");
    roottree->Branch("fft1",&fft1,"fft1/D");
    roottree->Branch("fftsum",&fftsum,"fftsum/D");
-   roottree->Branch("fftdata",&fftdata,"fftdata[120]/D");
-   roottree->Branch("fftdt",&fftdt,"fftdt[120]/D");
+   // roottree->Branch("fftdata",&fftdata,"fftdata[120]/D");
+   // roottree->Branch("fftdt",&fftdt,"fftdt[120]/D");
 
    for (int i = 0; i < 120; ++i)
      {
@@ -158,11 +161,12 @@ Bool_t UserClass::Process(Long64_t entry)
   // ----------------------------------------
 
   b_cid->GetEntry(entry);
-  if(cid != 4) return kTRUE;
+  if(cid != selectch) return kTRUE;
 
   b_ped->GetEntry(entry);
   b_ADC->GetEntry(entry);
   b_sample->GetEntry(entry);
+  b_tnum->GetEntry(entry);
   
   baseline = 4096-ped;
   rp = -1;
@@ -194,6 +198,7 @@ Bool_t UserClass::Process(Long64_t entry)
   fftsum = 0;
   for (int i = 0; i < 120; ++i)
     {
+      fftdata[i] = out[i];
       fftsum += out[i];
     }
 
