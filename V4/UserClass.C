@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 二 6月  5 04:03:08 2018 (+0800)
-// Last-Updated: Fri Jun 22 20:24:38 2018 (-0400)
+// Last-Updated: Sun Jun 24 10:00:44 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 36
+//     Update #: 64
 // URL: http://wuhongyi.cn 
 
 #define  UserClass_cxx
@@ -52,7 +52,28 @@ void UserClass::Begin(TTree * /*tree*/)
    FL = 4;
    FG = 0;
 
-   
+   cutgup = new TCutG("CUTGUP",4);
+   cutgup->SetPoint(0,1318.05,1829.88);// 0 2
+   cutgup->SetPoint(1,1461.32,1484.87);
+   cutgup->SetPoint(2,3377.51,3276.27);
+   cutgup->SetPoint(3,3225.29,3541.67);
+   // cutgup->SetPoint(0,1685.17,2002.39);// 3 1 
+   // cutgup->SetPoint(1,1783.67,1617.57);
+   // cutgup->SetPoint(2,4093.84,3594.75);
+   // cutgup->SetPoint(3,3914.76,3926.49);
+   cutgdown = new TCutG("CUTGDOWN",4);
+   cutgdown->SetPoint(0,1550.86,1498.14);
+   cutgdown->SetPoint(1,1667.26,1272.56);
+   cutgdown->SetPoint(2,3735.67,3037.42);
+   cutgdown->SetPoint(3,3610.32,3249.73);
+   // cutgdown->SetPoint(0,2088.11,1790.07);
+   // cutgdown->SetPoint(1,4290.83,3501.86);
+   // cutgdown->SetPoint(2,4559.46,2957.8);
+   // cutgdown->SetPoint(3,2222.42,1365.45);
+   countup = 0;
+   countdown = 0;
+
+   aven = 1000;
    rootfile = new TFile("output.root","RECREATE");//"RECREATE" "READ"
    if(!rootfile->IsOpen())
      {
@@ -62,24 +83,44 @@ void UserClass::Begin(TTree * /*tree*/)
    roottree = new TTree("tree","Hongyi Wu Data");
    roottree->Branch("rp",&rp,"rp/S");
    roottree->Branch("peak",&peak,"peak/S");
+   roottree->Branch("peakm",&peakm,"peakm/S");
    roottree->Branch("ffpeak",&ffpeak,"ffpeak/D");
    roottree->Branch("data",&data,"data[256]/S");
    roottree->Branch("dt",&dt,"dt[256]/S");
    roottree->Branch("fastfilter",&fastfilter,"fastfilter[256]/D");
+   roottree->Branch("ADC",&ADC,"ADC[240]/S");
+   roottree->Branch("sample",&sample,"sample[240]/S");
    roottree->Branch("ofr",&ofr,"ofr/O");
    roottree->Branch("num",&num,"num/I");
    roottree->Branch("energy",&energy,"energy/I");
    roottree->Branch("energy1",&energy1,"energy1/I");
    roottree->Branch("energy2",&energy2,"energy2/I");
    roottree->Branch("energy3",&energy3,"energy3/I");
-   
-   
+   roottree->Branch("energy4",&energy4,"energy4/I");
+   roottree->Branch("fft0",&fft0,"fft0/D");
+   roottree->Branch("fft1",&fft1,"fft1/D");
+   roottree->Branch("fftsum",&fftsum,"fftsum/D");
+   roottree->Branch("fftdata",&fftdata,"fftdata[120]/D");
+   roottree->Branch("fftdt",&fftdt,"fftdt[120]/D");
 
+   for (int i = 0; i < 120; ++i)
+     {
+       fftdt[i] = i;
+     }
+   
    for (int i = 0; i < 256; ++i)
      {
        dt[i] = i;
+       dataupf1[i] = 0;
+       datadownf1[i] = 0;
+       dataups1[i] = 0;
+       datadowns1[i] = 0;
      }
    num = 0;
+
+   in = Malloc_fftw_complex(240);
+   out = Malloc_fftw_real(240);
+   fft1d = new fftw1d(240,-1);
 }
 
 void UserClass::SlaveBegin(TTree * /*tree*/)
@@ -121,10 +162,12 @@ Bool_t UserClass::Process(Long64_t entry)
 
   b_ped->GetEntry(entry);
   b_ADC->GetEntry(entry);
-
+  b_sample->GetEntry(entry);
+  
   baseline = 4096-ped;
   rp = -1;
   peak = -4096;
+  peakm = 4096;
   ofr = false;
   for (int i = 0; i < 240; ++i)
     {
@@ -135,13 +178,31 @@ Bool_t UserClass::Process(Long64_t entry)
 	  rp = i;
 	  peak = ADC[i];
 	}
+      if(ADC[i] < peakm)
+	{
+	  peakm = ADC[i];
+	}
+
+      in[i][0] = ADC[i];
+      in[i][1] = 0;
     }
 
+  // fft
+  fft1d->ForwardGetAmplitude(in,out);
+  fft0 = out[0];
+  fft1 = out[1];
+  fftsum = 0;
+  for (int i = 0; i < 120; ++i)
+    {
+      fftsum += out[i];
+    }
+
+  
   for (int i = 0; i < 256; ++i)
     {
       data[i] = 0;
     }
-
+  
   for (int i = rp; i < 240; ++i)
     {
       if(64+i-rp >= 256) break;
@@ -179,15 +240,11 @@ Bool_t UserClass::Process(Long64_t entry)
   energy1 = 0;
   energy2 = 0;
   energy3 = 0;
-  
-  for (int i = 0; i < 240; ++i)
-    {
-      energy += ADC[i];
-    }
+  energy4 = 0;
 
-  for (int i = 50; i < 70; ++i)
+  for (int i = 58; i < 71; ++i)
     {
-      energy1 += ADC[i];
+      energy1 += data[i];
     }
 
   for (int i = 50; i < 90; ++i)
@@ -195,12 +252,45 @@ Bool_t UserClass::Process(Long64_t entry)
       energy2 += ADC[i];
     }
 
-  for (int i = 50; i < 110; ++i)
+  for (int i = 0; i < 240; ++i)
     {
-      energy3 += ADC[i];
+      energy += ADC[i];
+    }
+  for (int i = 0; i < 256; ++i)
+    {
+      energy3 += data[i];
+    }
+
+  for (int i = 50; i < 134; ++i)
+    {
+      energy4 += data[i];
     }
   
-
+  if(countup < aven)
+    {
+      if(cutgup->IsInside(energy,energy2)/*cutgup->IsInside(energy3,energy1) && rp>120 && rp<170*/)//energy,energy2
+	{
+	  for (int i = 0; i < 256; ++i)
+	    {
+	      dataupf1[i] += ((double)data[i]/peak);
+	      dataups1[i] += ((double)data[i]/energy4);
+	    }
+	  countup++;
+	}
+    }
+  if(countdown < aven)
+    {
+      if(cutgdown->IsInside(energy,energy2)/*cutgdown->IsInside(energy3,energy1) && rp>120 && rp<170*/)//energy,energy2
+	{
+	  for (int i = 0; i < 256; ++i)
+	    {
+	      datadownf1[i] += ((double)data[i]/peak);
+	      datadowns1[i] += ((double)data[i]/energy4);
+	    }
+	  countdown++;
+	}
+    }
+  
   roottree->Fill();//loop
   num++;
    return kTRUE;
@@ -220,9 +310,47 @@ void UserClass::Terminate()
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.
 
+
+  
   rootfile->cd();
+
+  TGraph *gupf1 = new TGraph;
+  gupf1->SetName("gupf1");
+  TGraph *gdownf1 = new TGraph;
+  gdownf1->SetName("gdownf1");
+  TGraph *gdiff1 = new TGraph;
+  gdiff1->SetName("gdiff1");
+
+  TGraph *gups1 = new TGraph;
+  gups1->SetName("gups1");
+  TGraph *gdowns1 = new TGraph;
+  gdowns1->SetName("gdowns1");
+  TGraph *gdifs1 = new TGraph;
+  gdifs1->SetName("gdifs1");
+  
+  for (int i = 0; i < 256; ++i)
+    {
+      gupf1->SetPoint(i,i,dataupf1[i]/aven);
+      gdownf1->SetPoint(i,i,datadownf1[i]/aven);
+      gdiff1->SetPoint(i,i,(datadownf1[i]-dataupf1[i])/aven);
+
+      gups1->SetPoint(i,i,dataups1[i]/aven);
+      gdowns1->SetPoint(i,i,datadowns1[i]/aven);
+      gdifs1->SetPoint(i,i,(dataups1[i]-datadowns1[i])/aven);      
+    }
+
+  gupf1->Write();
+  gdownf1->Write();
+  gdiff1->Write();
+  gups1->Write();
+  gdowns1->Write();
+  gdifs1->Write();
+
+  
   roottree->Write();
-   rootfile->Close();
+  rootfile->Close();
+
+  std::cout<<std::endl<<countup<<"  "<<countdown<<std::endl;
    // ----------------------------------------
   std::cout<<std::endl;
   Benchmark->Show("tree");//计时结束并输出时间

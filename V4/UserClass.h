@@ -4,15 +4,16 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 二 6月  5 03:59:43 2018 (+0800)
-// Last-Updated: Fri Jun 22 20:05:37 2018 (-0400)
+// Last-Updated: Sun Jun 24 10:00:44 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 20
+//     Update #: 27
 // URL: http://wuhongyi.cn 
 
 #ifndef _USERCLASS_H_
 #define _USERCLASS_H_
 
 #include "DataClass.h"
+#include "pkuFFTW.hh"
 
 #include "RVersion.h"//版本判断
 #include "TApplication.h"
@@ -134,7 +135,10 @@ public:
   
   Short_t baseline;
 
-  int energy,energy1,energy2,energy3;
+  int energy,energy1,energy2,energy3,energy4;
+  double fft0,fft1,fftsum;
+  double fftdata[120];
+  double fftdt[120];
   
   Short_t data[256];//max in point 64
   double fastfilter[256];
@@ -143,9 +147,23 @@ public:
   TTree *roottree;
   Short_t rp;//max point bin in raw data
   Short_t peak;//peak
+  Short_t peakm;//peak
   double ffpeak;
   int num;
   bool ofr;
+
+  int aven;
+  TCutG *cutgup,*cutgdown;
+  int countup,countdown;
+  double dataupf1[256];
+  double datadownf1[256];
+  double dataups1[256];
+  double datadowns1[256];
+ 
+
+  fftw_complex *in;
+  double *out;
+  fftw1d *fft1d;
   ClassDef(UserClass,0);
 };
 

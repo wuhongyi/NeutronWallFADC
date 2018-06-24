@@ -1,7 +1,7 @@
 OBJ = wu
 
 CXX=g++        
-CXXFLAGS:=-std=c++11 -g -Wall -lrt  -I. 
+CXXFLAGS:=-std=c++11 -g -Wall -lrt  -I. -I/user/wuh/software/include -L/user/wuh/software/lib -lfftw3
 ROOTLIBS = $(shell root-config --libs) -lGui
 ROOTINC = -I$(shell root-config --incdir) 
 CXXFLAGS+=$(ROOTINC)
@@ -9,11 +9,11 @@ LIBS:=
 
 
 
-INCLUDES:=DataClass.h UserClass.h
+INCLUDES:=DataClass.h UserClass.h pkuFFTW.hh
 
-OBJECTS:=main.o Dict.o DataClass.o UserClass.o
+OBJECTS:=main.o Dict.o DataClass.o UserClass.o pkuFFTW.o
 
-SRCS:=main.cc Dict.cc DataClass.C UserClass.C
+SRCS:=main.cc Dict.cc DataClass.C UserClass.C pkuFFTW.cc
 
 all: $(OBJ)
 

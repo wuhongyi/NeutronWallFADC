@@ -87,7 +87,7 @@ namespace ROOT {
       ::UserClass *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::UserClass >(0);
       static ::ROOT::TGenericClassInfo 
-         instance("UserClass", ::UserClass::Class_Version(), "UserClass.h", 107,
+         instance("UserClass", ::UserClass::Class_Version(), "UserClass.h", 108,
                   typeid(::UserClass), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::UserClass::Dictionary, isa_proxy, 4,
                   sizeof(::UserClass) );
