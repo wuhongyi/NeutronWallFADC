@@ -251,7 +251,7 @@ namespace {
     };
     static const char* includePaths[] = {
 "/projects/hira/software/ROOT-v6.13.02/include",
-"/evtdata/hira/wuhongyi/NeutronWallFADC/V4/",
+"/evtdata/hira/wuhongyi/NeutronWallFADC/PSD/",
 0
     };
     static const char* fwdDeclCode = R"DICTFWDDCLS(

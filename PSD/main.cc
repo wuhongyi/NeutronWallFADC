@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 四 6月  7 05:45:42 2018 (+0800)
-// Last-Updated: Sun Jun 24 13:25:01 2018 (-0400)
+// Last-Updated: Wed Jun 27 10:24:07 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 30
+//     Update #: 34
 // URL: http://wuhongyi.cn 
 
 #include "UserClass.h"
@@ -52,7 +52,9 @@ int main(int argc, char *argv[])
   gSystem->Setenv("Dir",dir);//当前文件路径
   //=======================================================
   //将要处理的文件放在这里，支持tree名相同的多个结构相同的文件。特别适合用于Geant4多线程模拟的输出文件处理。
-  chain->Add("$Dir/../data/run_1470_fadc_15.root");//采用通配符
+  // chain->Add("$Dir/../data/run_1409_fadc_15.root");//采用通配符
+  chain->Add("$Dir/../data/run_131*_fadc_15.root");//采用通配符
+  // chain->Add("$Dir/../data/run_142*_fadc_15.root");//采用通配符
   // chain->Add("$Dir/why.root");
 
   //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
