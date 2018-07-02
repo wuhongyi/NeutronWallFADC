@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 二 6月  5 04:03:08 2018 (+0800)
-// Last-Updated: Sun Jun 24 13:21:02 2018 (-0400)
+// Last-Updated: Mon Jul  2 14:06:25 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 69
+//     Update #: 70
 // URL: http://wuhongyi.cn 
 
 #define  UserClass_cxx
@@ -88,11 +88,11 @@ void UserClass::Begin(TTree * /*tree*/)
    roottree->Branch("peak",&peak,"peak/S");
    roottree->Branch("peakm",&peakm,"peakm/S");
    roottree->Branch("ffpeak",&ffpeak,"ffpeak/D");
-   // roottree->Branch("data",&data,"data[256]/S");
-   // roottree->Branch("dt",&dt,"dt[256]/S");
-   // roottree->Branch("fastfilter",&fastfilter,"fastfilter[256]/D");
-   // roottree->Branch("ADC",&ADC,"ADC[240]/S");
-   // roottree->Branch("sample",&sample,"sample[240]/S");
+   roottree->Branch("data",&data,"data[256]/S");
+   roottree->Branch("dt",&dt,"dt[256]/S");
+   roottree->Branch("fastfilter",&fastfilter,"fastfilter[256]/D");
+   roottree->Branch("ADC",&ADC,"ADC[240]/S");
+   roottree->Branch("sample",&sample,"sample[240]/S");
    roottree->Branch("ofr",&ofr,"ofr/O");
    roottree->Branch("num",&num,"num/I");
    roottree->Branch("energy",&energy,"energy/I");
