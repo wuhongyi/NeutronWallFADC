@@ -7,8 +7,8 @@
 # done
 
 
-for (( i=1310; i<=1319; i++ ))
+for (( i=1410; i<=1419; i++ ))
 do
     echo "mod: $i"
-    ./wu $i 15
+    ./wu $i 14
 done
