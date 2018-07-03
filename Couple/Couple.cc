@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: Sun Jul  1 19:40:59 2018 (-0400)
-// Last-Updated: Mon Jul  2 13:22:25 2018 (-0400)
+// Last-Updated: Mon Jul  2 19:40:55 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 16
+//     Update #: 20
 // URL: http://wuhongyi.cn 
 
 #include "Couple.hh"
@@ -47,7 +47,7 @@ Couple::Couple(TString rawfilepath,TString outfilepath,int runnumber,int numl,in
   t2 = (TTree*)f2->Get("t");
   t2->SetBranchAddress("tnum",&tnum2);
   t2->SetBranchAddress("cid",&cid2);
-  t1->SetBranchAddress("ped",&ped2);
+  t2->SetBranchAddress("ped",&ped2);
   t2->SetBranchAddress("ADC",&ADC2);
   TotalEnery2 = t2->GetEntries();
   t2->Print();
@@ -123,8 +123,8 @@ void Couple::Process()
 	  // std::cout<<entry1<<"  "<<entrystatus<<"  "<<tnum1<<std::endl;
 	  for (int i = 0; i < 240; ++i)
 	    {
-	      ADC1[i] = ADC1[i] - (4096-ped1);
-	      ADC2[i] = ADC2[i] - (4096-ped2);  
+	      ADC1[i] = ADC1[i] - (Short_t)(4096-ped1);
+	      ADC2[i] = ADC2[i] - (Short_t)(4096-ped2);  
 	    }
 	  
 	  file_out->cd();
