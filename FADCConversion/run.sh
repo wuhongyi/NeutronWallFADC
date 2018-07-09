@@ -7,7 +7,7 @@
 # done
 
 
-for (( i=1410; i<=1419; i++ ))
+for (( i=1310; i<=1339; i++ ))
 do
     echo "mod: $i"
     ./wu $i 14

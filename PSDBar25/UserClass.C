@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 二 6月  5 04:03:08 2018 (+0800)
-// Last-Updated: Sat Jul  7 21:13:19 2018 (-0400)
+// Last-Updated: Mon Jul  9 15:25:57 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 74
+//     Update #: 77
 // URL: http://wuhongyi.cn 
 
 #define  UserClass_cxx
@@ -55,16 +55,16 @@ void UserClass::Begin(TTree * /*tree*/)
    selectch = 4;
    
    cutgup = new TCutG("CUTGUP",4);
-   cutgup->SetPoint(0,2356.73,1936.04);// 0 2
-   cutgup->SetPoint(1,4147.56,3355.89);
-   cutgup->SetPoint(2,4004.3,3647.82);
-   cutgup->SetPoint(3,2329.87,2294.32);
+   cutgup->SetPoint(0,5608.88,4827.49);// 0 2
+   cutgup->SetPoint(1,5823.78,4349.79);
+   cutgup->SetPoint(2,8975.64,6526.01);
+   cutgup->SetPoint(3,8617.48,7109.87);
 
    cutgdown = new TCutG("CUTGDOWN",4);
-   cutgdown->SetPoint(0,2652.22,2028.93);
-   cutgdown->SetPoint(1,4559.46,3568.21);
-   cutgdown->SetPoint(2,4738.54,3143.58);
-   cutgdown->SetPoint(3,2938.75,1869.69);
+   cutgdown->SetPoint(0,6307.31,3580.15);
+   cutgdown->SetPoint(1,6164.04,4084.39);
+   cutgdown->SetPoint(2,9208.45,6154.46);
+   cutgdown->SetPoint(3,9441.26,5676.75);
 
    countup = 0;
    countdown = 0;
@@ -241,7 +241,7 @@ Bool_t UserClass::Process(Long64_t entry)
   energy3 = 0;
   energy4 = 0;
 
-  for (int i = 58; i < 69; ++i)
+  for (int i = 58; i < 69; ++i)//67 69
     {
       energy1 += data[i];
     }
