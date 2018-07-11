@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 二 6月  5 04:03:08 2018 (+0800)
-// Last-Updated: Tue Jul 10 21:28:00 2018 (-0400)
+// Last-Updated: Tue Jul 10 22:03:38 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 88
+//     Update #: 91
 // URL: http://wuhongyi.cn 
 
 #define  UserClass_cxx
@@ -67,11 +67,17 @@ void UserClass::Begin(TTree * /*tree*/)
    // cutgup->SetPoint(1,16199.1,0.839632);
    // cutgup->SetPoint(2,27616.2,0.840368);
    // cutgup->SetPoint(3,27444.1,0.876765);
-   cutgup->SetPoint(0,2229.22,0.966144);
-   cutgup->SetPoint(1,2242.23,0.928947);
-   cutgup->SetPoint(2,2853.62,0.916549);
-   cutgup->SetPoint(3,2860.13,0.963664);
+   // cutgup->SetPoint(0,2229.22,0.966144);//4
+   // cutgup->SetPoint(1,2242.23,0.928947);
+   // cutgup->SetPoint(2,2853.62,0.916549);
+   // cutgup->SetPoint(3,2860.13,0.963664);
+   cutgup->SetPoint(0,1904.33,0.954352);//3
+   cutgup->SetPoint(1,1910.84,0.892358);
+   cutgup->SetPoint(2,2849.32,0.872115);
+   cutgup->SetPoint(3,2862.36,0.913866);
 
+
+   
    
    cutgdown = new TCutG("CUTGDOWN",4);
    // cutgdown->SetPoint(0,5215.07,0.826665);
@@ -86,10 +92,17 @@ void UserClass::Begin(TTree * /*tree*/)
    // cutgdown->SetPoint(1,16916.2,0.766103);
    // cutgdown->SetPoint(2,25522.1,0.763529);
    // cutgdown->SetPoint(3,25263.9,0.802132);
-   cutgdown->SetPoint(0,2294.26,0.757844);
-   cutgdown->SetPoint(1,2957.69,0.760324);
-   cutgdown->SetPoint(2,3003.22,0.713209);
-   cutgdown->SetPoint(3,2326.79,0.69833);
+   // cutgdown->SetPoint(0,2294.26,0.757844);//4
+   // cutgdown->SetPoint(1,2957.69,0.760324);
+   // cutgdown->SetPoint(2,3003.22,0.713209);
+   // cutgdown->SetPoint(3,2326.79,0.69833);
+   cutgdown->SetPoint(0,2047.71,0.746862);//3
+   cutgdown->SetPoint(1,3129.56,0.745597);
+   cutgdown->SetPoint(2,3129.56,0.682338);
+   cutgdown->SetPoint(3,2073.77,0.679808);
+
+   
+
    
    countup = 0;
    countdown = 0;
@@ -266,7 +279,7 @@ Bool_t UserClass::Process(Long64_t entry)
   energy3 = 0;
   energy4 = 0;
 
-  for (int i = 58; i < 72; ++i)//69 71 73
+  for (int i = 58; i < 75; ++i)//69 71 73
     {
       energy1 += data[i];
     }
