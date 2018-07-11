@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 二 6月  5 04:03:08 2018 (+0800)
-// Last-Updated: Mon Jul  9 15:25:57 2018 (-0400)
+// Last-Updated: Tue Jul 10 21:28:00 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 77
+//     Update #: 88
 // URL: http://wuhongyi.cn 
 
 #define  UserClass_cxx
@@ -52,20 +52,45 @@ void UserClass::Begin(TTree * /*tree*/)
    FL = 4;
    FG = 0;
 
-   selectch = 4;
+   selectch = 3;
    
    cutgup = new TCutG("CUTGUP",4);
-   cutgup->SetPoint(0,5608.88,4827.49);// 0 2
-   cutgup->SetPoint(1,5823.78,4349.79);
-   cutgup->SetPoint(2,8975.64,6526.01);
-   cutgup->SetPoint(3,8617.48,7109.87);
+   // cutgup->SetPoint(0,4595.93,0.921618);
+   // cutgup->SetPoint(1,4608.97,0.865687);
+   // cutgup->SetPoint(2,7548.23,0.856582);
+   // cutgup->SetPoint(3,7528.68,0.906009);
+   // cutgup->SetPoint(0,2569.08,0.921457);
+   // cutgup->SetPoint(1,2556.05,0.877176);
+   // cutgup->SetPoint(2,4146.25,0.872115);
+   // cutgup->SetPoint(3,4146.25,0.903745);
+   // cutgup->SetPoint(0,16170.4,0.874559);
+   // cutgup->SetPoint(1,16199.1,0.839632);
+   // cutgup->SetPoint(2,27616.2,0.840368);
+   // cutgup->SetPoint(3,27444.1,0.876765);
+   cutgup->SetPoint(0,2229.22,0.966144);
+   cutgup->SetPoint(1,2242.23,0.928947);
+   cutgup->SetPoint(2,2853.62,0.916549);
+   cutgup->SetPoint(3,2860.13,0.963664);
 
+   
    cutgdown = new TCutG("CUTGDOWN",4);
-   cutgdown->SetPoint(0,6307.31,3580.15);
-   cutgdown->SetPoint(1,6164.04,4084.39);
-   cutgdown->SetPoint(2,9208.45,6154.46);
-   cutgdown->SetPoint(3,9441.26,5676.75);
-
+   // cutgdown->SetPoint(0,5215.07,0.826665);
+   // cutgdown->SetPoint(1,8102.19,0.818861);
+   // cutgdown->SetPoint(2,8102.19,0.786342);
+   // cutgdown->SetPoint(3,5254.17,0.770734);
+   // cutgdown->SetPoint(0,2705.94,0.805061);
+   // cutgdown->SetPoint(1,2751.56,0.751923);
+   // cutgdown->SetPoint(2,4446.04,0.76584);
+   // cutgdown->SetPoint(3,4426.49,0.801265);
+   // cutgdown->SetPoint(0,16887.6,0.794044);
+   // cutgdown->SetPoint(1,16916.2,0.766103);
+   // cutgdown->SetPoint(2,25522.1,0.763529);
+   // cutgdown->SetPoint(3,25263.9,0.802132);
+   cutgdown->SetPoint(0,2294.26,0.757844);
+   cutgdown->SetPoint(1,2957.69,0.760324);
+   cutgdown->SetPoint(2,3003.22,0.713209);
+   cutgdown->SetPoint(3,2326.79,0.69833);
+   
    countup = 0;
    countdown = 0;
 
@@ -241,7 +266,7 @@ Bool_t UserClass::Process(Long64_t entry)
   energy3 = 0;
   energy4 = 0;
 
-  for (int i = 58; i < 69; ++i)//67 69
+  for (int i = 58; i < 72; ++i)//69 71 73
     {
       energy1 += data[i];
     }
@@ -267,24 +292,24 @@ Bool_t UserClass::Process(Long64_t entry)
   
   if(countup < aven)
     {
-      if(cutgup->IsInside(energy3,energy1)&&rp<90/*cutgup->IsInside(energy3,energy1) && rp>120 && rp<170*/)//energy,energy2
+      if(cutgup->IsInside(energy3,(energy1+0.01)/energy3)&&rp>30&&rp<50&&peak>100/*cutgup->IsInside(energy3,energy1) && rp>120 && rp<170*/)//energy,energy2
 	{
 	  for (int i = 0; i < 256; ++i)
 	    {
 	      dataupf1[i] += ((double)data[i]/peak);
-	      dataups1[i] += ((double)data[i]/energy4);
+	      dataups1[i] += ((double)data[i]/energy3);
 	    }
 	  countup++;
 	}
     }
   if(countdown < aven)
     {
-      if(cutgdown->IsInside(energy3,energy1)&&rp<90/*cutgdown->IsInside(energy3,energy1) && rp>120 && rp<170*/)//energy,energy2
+      if(cutgdown->IsInside(energy3,(energy1+0.01)/energy3)&&rp>30&&rp<50&&peak>100/*cutgdown->IsInside(energy3,energy1) && rp>120 && rp<170*/)//energy,energy2
 	{
 	  for (int i = 0; i < 256; ++i)
 	    {
 	      datadownf1[i] += ((double)data[i]/peak);
-	      datadowns1[i] += ((double)data[i]/energy4);
+	      datadowns1[i] += ((double)data[i]/energy3);
 	    }
 	  countdown++;
 	}

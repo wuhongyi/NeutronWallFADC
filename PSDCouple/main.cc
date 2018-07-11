@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 四 6月  7 05:45:42 2018 (+0800)
-// Last-Updated: Mon Jul  2 20:38:44 2018 (-0400)
+// Last-Updated: Mon Jul  9 16:07:48 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 38
+//     Update #: 39
 // URL: http://wuhongyi.cn 
 
 #include "UserClass.h"
@@ -53,7 +53,9 @@ int main(int argc, char *argv[])
   //=======================================================
   //将要处理的文件放在这里，支持tree名相同的多个结构相同的文件。特别适合用于Geant4多线程模拟的输出文件处理。
   // chain->Add("$Dir/../data/run_1409_fadc_15.root");//采用通配符
-  chain->Add("$Dir/../data/run_0786_fadc_15_21_4_4.root");//采用通配符
+  chain->Add("$Dir/../data/run_131*_fadc_14_14_3_4.root");//采用通配符
+  chain->Add("$Dir/../data/run_132*_fadc_14_14_3_4.root");//采用通配符
+  chain->Add("$Dir/../data/run_133*_fadc_14_14_3_4.root");//采用通配符
   // chain->Add("$Dir/../data/run_142*_fadc_15.root");//采用通配符
   // chain->Add("$Dir/why.root");
 

@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 二 6月  5 04:03:08 2018 (+0800)
-// Last-Updated: Mon Jul  2 19:47:28 2018 (-0400)
+// Last-Updated: Mon Jul  9 17:20:30 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 72
+//     Update #: 74
 // URL: http://wuhongyi.cn 
 
 #define  UserClass_cxx
@@ -192,7 +192,7 @@ Bool_t UserClass::Process(Long64_t entry)
   energy4r = 0;
 
   
-  for (int i = 58; i < 71; ++i)
+  for (int i = 58; i < 73; ++i)//69/71
     {
       energy1l += datal[i];
       energy1r += datar[i];
