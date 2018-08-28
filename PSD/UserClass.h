@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 二 6月  5 03:59:43 2018 (+0800)
-// Last-Updated: Sun Jun 24 11:23:07 2018 (-0400)
+// Last-Updated: Tue Aug 28 15:28:19 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 28
+//     Update #: 32
 // URL: http://wuhongyi.cn 
 
 #ifndef _USERCLASS_H_
@@ -132,6 +132,13 @@ private:
 public:
   // 用户定义
   int FL,FG;
+  int SL,SG;
+  double b1;
+  double c0,c1,c2;
+  double PreampTau;
+
+  int SL0,SG0;
+  double c00,c10,c20;
   
   Short_t baseline;
 
@@ -142,6 +149,7 @@ public:
   
   Short_t data[256];//max in point 64
   double fastfilter[256];
+  double slowfilter[256];
   Short_t dt[256];
   TFile *rootfile;
   TTree *roottree;
@@ -149,9 +157,12 @@ public:
   Short_t peak;//peak
   Short_t peakm;//peak
   double ffpeak;
+  double sfpeak;
+  double sfpeak0;
   int num;
   bool ofr;
 
+  
   int aven;
   TCutG *cutgup,*cutgdown;
   int countup,countdown;

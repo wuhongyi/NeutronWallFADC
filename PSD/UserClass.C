@@ -4,9 +4,9 @@
 // Author: Hongyi Wu(吴鸿毅)
 // Email: wuhongyi@qq.com 
 // Created: 二 6月  5 04:03:08 2018 (+0800)
-// Last-Updated: Mon Jul  2 14:06:25 2018 (-0400)
+// Last-Updated: Tue Aug 28 15:28:19 2018 (-0400)
 //           By: Hongyi Wu(吴鸿毅)
-//     Update #: 70
+//     Update #: 80
 // URL: http://wuhongyi.cn 
 
 #define  UserClass_cxx
@@ -51,7 +51,21 @@ void UserClass::Begin(TTree * /*tree*/)
 
    FL = 4;
    FG = 0;
+   SL = 16;//10
+   SG = 8;//5
+   SL0 = 8;//10
+   SG0 = 4;//5
+   PreampTau = 0.01;
+   b1 = TMath::Exp(-1.0*1.0/500/PreampTau);
+   c0 = -(1.0 - b1) * std::pow(b1, (double)SL) * 4.0 / (1.0 - std::pow(b1, (double)SL));
+   c1 = (1.0 - b1) * 4.0;
+   c2 = (1.0 - b1) * 4.0 / (1.0 - std::pow(b1, (double)SL));
 
+   c00 = -(1.0 - b1) * std::pow(b1, (double)SL0) * 4.0 / (1.0 - std::pow(b1, (double)SL0));
+   c10 = (1.0 - b1) * 4.0;
+   c20 = (1.0 - b1) * 4.0 / (1.0 - std::pow(b1, (double)SL0));
+
+   
    selectch = 4;
    
    cutgup = new TCutG("CUTGUP",4);
@@ -75,6 +89,7 @@ void UserClass::Begin(TTree * /*tree*/)
    countup = 0;
    countdown = 0;
 
+   
    aven = 1000;
    rootfile = new TFile("output.root","RECREATE");//"RECREATE" "READ"
    if(!rootfile->IsOpen())
@@ -88,9 +103,12 @@ void UserClass::Begin(TTree * /*tree*/)
    roottree->Branch("peak",&peak,"peak/S");
    roottree->Branch("peakm",&peakm,"peakm/S");
    roottree->Branch("ffpeak",&ffpeak,"ffpeak/D");
+   roottree->Branch("sfpeak",&sfpeak,"sfpeak/D");
+   roottree->Branch("sfpeak0",&sfpeak0,"sfpeak0/D");
    roottree->Branch("data",&data,"data[256]/S");
    roottree->Branch("dt",&dt,"dt[256]/S");
    roottree->Branch("fastfilter",&fastfilter,"fastfilter[256]/D");
+   roottree->Branch("slowfilter",&slowfilter,"slowfilter[256]/D");
    roottree->Branch("ADC",&ADC,"ADC[240]/S");
    roottree->Branch("sample",&sample,"sample[240]/S");
    roottree->Branch("ofr",&ofr,"ofr/O");
@@ -106,6 +124,7 @@ void UserClass::Begin(TTree * /*tree*/)
    // roottree->Branch("fftdata",&fftdata,"fftdata[120]/D");
    // roottree->Branch("fftdt",&fftdt,"fftdt[120]/D");
 
+   
    for (int i = 0; i < 120; ++i)
      {
        fftdt[i] = i;
@@ -240,6 +259,109 @@ Bool_t UserClass::Process(Long64_t entry)
     {
       fastfilter[x] = fastfilter[offset];
     }
+
+  double esum0,esum1,esum2;
+  offset = 2*SL0 + SG0 - 1;
+  sfpeak0 = -10000;
+  for(int x = 0; x < 250; x++)
+    {
+      esum0 = 0;
+      for(int y = (x-offset); y < (x-offset+SL0); y++)
+	{
+	  if(y < 0)
+	    {
+	      // std::cout<<"y<0  " <<SlowGap<<"  "<<SlowLen<<"  "<<y<<std::endl;
+	      // return -1;
+	      esum0 += 0;
+	    }
+	  else
+	    {
+	      esum0 += data[y];
+	    }
+	}
+      esum1 = 0;
+      for(int y = (x-offset+SL0); y < (x-offset+SL0+SG0); y++)
+	{
+	  if(y < 0)
+	    {
+	      // std::cout<<"error: y<0"<<std::endl;
+	      esum1 += 0;
+	    }
+	  else
+	    {
+	      esum1 += data[y];
+	    }
+	}
+      esum2 = 0;
+      for(int y = (x-offset+SL0+SG0); y < (x-offset+2*SL0+SG0); y++)
+	{
+	  if(y < 0)
+	    {
+	      // std::cout<<"error: y<0"<<std::endl;
+	      esum2 += 0;
+	    }
+	  else
+	    {
+	      esum2 += data[y];
+	    }
+	}
+      slowfilter[x] = c00*(double)esum0+c10*(double)esum1+c20*(double)esum2;
+      if(slowfilter[x] > sfpeak0) sfpeak0 = slowfilter[x];
+    }
+
+
+  
+  offset = 2*SL + SG - 1;
+  sfpeak = -10000;
+  for(int x = 0; x < 250; x++)
+    {
+      esum0 = 0;
+      for(int y = (x-offset); y < (x-offset+SL); y++)
+	{
+	  if(y < 0)
+	    {
+	      // std::cout<<"y<0  " <<SlowGap<<"  "<<SlowLen<<"  "<<y<<std::endl;
+	      // return -1;
+	      esum0 += 0;
+	    }
+	  else
+	    {
+	      esum0 += data[y];
+	    }
+	}
+      esum1 = 0;
+      for(int y = (x-offset+SL); y < (x-offset+SL+SG); y++)
+	{
+	  if(y < 0)
+	    {
+	      // std::cout<<"error: y<0"<<std::endl;
+	      esum1 += 0;
+	    }
+	  else
+	    {
+	      esum1 += data[y];
+	    }
+	}
+      esum2 = 0;
+      for(int y = (x-offset+SL+SG); y < (x-offset+2*SL+SG); y++)
+	{
+	  if(y < 0)
+	    {
+	      // std::cout<<"error: y<0"<<std::endl;
+	      esum2 += 0;
+	    }
+	  else
+	    {
+	      esum2 += data[y];
+	    }
+	}
+      slowfilter[x] = c0*(double)esum0+c1*(double)esum1+c2*(double)esum2;
+      if(slowfilter[x] > sfpeak) sfpeak = slowfilter[x];
+    }
+
+
+
+
   
   energy = 0;
   energy1 = 0;
